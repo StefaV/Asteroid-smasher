@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdlib>
 #include <ctime>
 #include <conio.h> //for detecting key strokes
 #include <windows.h>//for screen clearing
