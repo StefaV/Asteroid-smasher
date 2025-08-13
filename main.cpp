@@ -34,6 +34,7 @@ class Rocket{
     public:
         int row;
         int column;
+        bool active = false;
         string sprite = "^";
 
         void draw(){
@@ -84,13 +85,23 @@ int main(){
         tick ++;
         if(tick == game_speed) {
             tick = 0;
-            if(asteroid.row > world_rows){
+
+            //Asteroid behavior
+            if(asteroid.row > world_rows){ //resets if out of bounds
                 asteroid.row = 1;
                 asteroid.column = 1 + (rand() % world_columns);
+                score --;
             }
-            else
-                asteroid.row++;
+            else{
+                asteroid.row ++; // movement
+            }
 
+            //Rocket behavior
+            if(rocket.row < 1)
+                rocket.active = false;
+            else
+                if(rocket.active == true)
+                    rocket.row --;
         }
 
         //Draws the screen
@@ -98,34 +109,57 @@ int main(){
                 cout << border_left;
                 
                 for (int j = 1; j < world_columns + 1; j++){ //Draws columns
-                    if (j == player.column && i == player.row){
+                    if (j == player.column && i == player.row)
                         player.draw();
-                    }
-                    else if(j == asteroid.column && i == asteroid.row){
+                    else if(j == asteroid.column && i == asteroid.row)
                         asteroid.draw();
-                    }
+                    else if(j == rocket.column && i == rocket.row)
+                        rocket.draw();
                     else
                         cout << space;
                 }
                 cout << border_right << endl;
             }
+        cout << endl;
+        cout << "Score: " << score << endl;
+        cout << endl;
+        cout << "Use a and d to move and w to shoot (all lower case) \nHit the asteroid: +1 point \nMiss the asteroid: -1 point \nAsteroid hits the player: -3 points";
         
         //checks for key presses
         if(kbhit()){
             key = (int)getch();
             switch(key) {
-            case 119: //letter w
+            case 119: //letter w; fires the rocket
+                if(rocket.active == false){
+                    rocket.active = true;
+                    rocket.row = player.row - 1;
+                    rocket.column = player.column;
+                }
                 break;
-            case 97:  //letter a
+            case 97:  //letter a; move left
                 if (player.column > 1) player.column --;
                 break;
-            case 100: //letter d
+            case 100: //letter d; move right
                 if (player.column < world_columns) player.column ++;
                 break;
             default:
                 cout << endl << "null" << endl;  //not arrow
                 break;
             }
+        }
+
+        //Collisions
+        if(asteroid.column == player.column && asteroid.row == player.row){ //Asteroid colides with player
+            asteroid.row = 1;
+            asteroid.column = 1 + (rand() % world_columns);
+            score -= 3;
+        }
+        else if(asteroid.column == rocket.column && (asteroid.row == rocket.row || asteroid.row == rocket.row - 1)){ // Asteroid collides with rocket
+            asteroid.row = 1;
+            asteroid.column = 1 + (rand() % world_columns);
+            score ++;
+            rocket.active == false;
+            rocket.row = 0;
         }
     }
     return 0;
