@@ -1,7 +1,7 @@
 #include <iostream>
 #include <ctime>
-#include <conio.h> //for detecting key strokes
-#include <windows.h>//for screen clearing
+#include <conio.h> //For detecting key strokes
+#include <windows.h>//For screen clearing
 #include <deque>
 
 using namespace std;
@@ -86,13 +86,13 @@ int main(){
             tick = 0;
 
             //Asteroid behavior
-            if(asteroid.row > world_rows){ //resets if out of bounds
+            if(asteroid.row > world_rows){ //Resets if out of bounds
                 asteroid.row = 1;
                 asteroid.column = 1 + (rand() % world_columns);
                 score --;
             }
             else{
-                asteroid.row ++; // movement
+                asteroid.row ++; //Movement
             }
 
             //Rocket behavior
@@ -100,7 +100,7 @@ int main(){
                 rocket.active = false;
             else
                 if(rocket.active == true)
-                    rocket.row --;
+                    rocket.row --; // Movement
         }
 
         //Draws the screen
@@ -124,31 +124,32 @@ int main(){
         cout << endl;
         cout << "Use a and d to move and w to shoot (all lower case) \nHit the asteroid: +1 point \nMiss the asteroid: -1 point \nAsteroid hits the player: -3 points";
         
-        //checks for key presses
+        //Checks for key presses
         if(kbhit()){
             key = (int)getch();
             switch(key) {
-            case 119: //letter w; fires the rocket
+            case 119: //Letter w; fires the rocket
                 if(rocket.active == false){
                     rocket.active = true;
                     rocket.row = player.row - 1;
                     rocket.column = player.column;
                 }
                 break;
-            case 97:  //letter a; move left
-                if (player.column > 1) player.column --;
+            case 97:  //Letter a; move left
+                if (player.column > 1) player.column --; //Left border collision check
                 break;
-            case 100: //letter d; move right
-                if (player.column < world_columns) player.column ++;
+            case 100: //Letter d; move right
+                if (player.column < world_columns) player.column ++; //Right border collision check
                 break;
             default:
-                cout << endl << "null" << endl;  //not arrow
+                cout << endl << "Invalid command" << endl;  //Not arrow
+                getch();
                 break;
             }
         }
 
         //Collisions
-        if(asteroid.column == player.column && asteroid.row == player.row){ //Asteroid colides with player
+        if(asteroid.column == player.column && asteroid.row == player.row){ //Asteroid collides with player
             asteroid.row = 1;
             asteroid.column = 1 + (rand() % world_columns);
             score -= 3;
